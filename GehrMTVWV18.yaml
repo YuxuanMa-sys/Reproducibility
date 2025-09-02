@@ -1,0 +1,79 @@
+dblp_url: https://dblp.org/rec/conf/pldi/GehrMTVWV18
+badges: [ 'artifacts_evaluated_functional_v1_1', 'artifacts_available_v1_1' ]
+computational_status:
+  type: ComputationalArticle
+  source_link_used_by_cp16:
+  tool_names:
+    - Ubuntu
+    - DMD (D Language Compiler)
+    - Git
+    - wget
+    - curl
+  innermost_computational_section_headings:
+    - Dependencies installation
+    - DMD compiler installation
+    - Cloning Bayonet repository
+    - Running scripts
+    - Executing Bayonet example
+  source_search:
+    type: SourceFound
+    reproducibility_documentation_level: specifies_some_commands
+    path:
+      links:
+        - url: https://doi.org/10.1145/3192366.3192400
+        - url: https://dl.acm.org/doi/pdf/10.1145/3192366.3192400
+        - url: https://github.com/eth-sri/bayone
+    is_source_versioned: yes
+    build_attempt:
+      time_spent: 30
+      base_image:
+        name: ubuntu
+        tag: "20.04"
+      build_directives:
+        - type: ENV
+          mapping:
+            DEBIAN_FRONTEND: noninteractive
+            TZ: America/New_York
+
+        - type: apt-get install
+          packages:
+            - wget
+            - curl
+            - unzip
+            - git
+            - tzdata
+            - ca-certificates
+
+        - type: RUN
+          cmds:
+            - wget https://downloads.dlang.org/releases/2.x/2.098.0/dmd_2.098.0-0_amd64.deb
+
+        - type: apt-get install
+          packages:
+            - ./dmd_2.098.0-0_amd64.deb
+
+        - type: RUN
+          cmds:
+            - rm dmd_2.098.0-0_amd64.deb
+            - git clone https://github.com/eth-sri/bayonet.git /home/bayonet
+        - type: RUN
+          cmds:
+            - cd /home/bayonet
+            - chmod +x dependencies.sh
+            - ./dependencies.sh
+        - type: RUN
+          cmds:
+            - cd /home/bayonet
+            - chmod +x build.sh
+            - ./build.sh
+      test_directives:
+        - type: RUN
+          cmds:
+            - cd /home/bayonet
+            - chmod +x bayonet
+            - args:
+                - ./bayonet
+                - examples/congestion-deterministic.bayonet
+              redirect_stdout: congestion-deterministic.psi
+      result:
+        type: BuildAndTestSuccess

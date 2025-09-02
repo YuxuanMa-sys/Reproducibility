@@ -1,0 +1,86 @@
+dblp_url: https://dblp.org/rec/journals/pacmpl/PulteFDFSS18
+badges: [ 'artifacts_evaluated_functional_v1_1' ]
+computational_status:
+  type: ComputationalArticle
+  source_link_used_by_cp16:
+  tool_names:
+    - Ubuntu
+    - OCaml
+    - OPAM
+    - Git
+    - Z3
+    - Dune
+    - OCamlbuild
+  innermost_computational_section_headings:
+    - System dependencies installation
+    - Environment variable setup
+    - OPAM setup and OCaml switch
+    - Installation of OCaml tools
+    - Adding REMS OPAM repository
+    - Cloning and building rmem
+  source_search:
+    type: SourceFound
+    reproducibility_documentation_level: specifies_some_commands
+    path:
+      links:
+        - url: https://doi.org/10.1145/3158107
+        - url: https://dl.acm.org/doi/pdf/10.1145/3158107
+        - url: https://github.com/rems-project/rmem
+    is_source_versioned: yes
+    build_attempt:
+      time_spent: 20
+      base_image:
+        name: ocaml/opam
+        tag: "ubuntu-22.04-ocaml-4.10"
+      build_directives:
+        - type: raw string
+          content: |
+            RUN sudo apt-get update && \
+                sudo apt-get install -y \
+                findutils \
+                libgmp-dev \
+                m4 \
+                perl \
+                pkg-config \
+                zlib1g-dev \
+                z3 \
+                && sudo apt-get clean
+
+            # Set environment variables
+            ENV RMEM_ROOT=/home/opam/rmem
+
+            # Switch to the OPAM user (default in this base image)
+            USER opam
+            WORKDIR /home/opam
+
+            # Ensure OCaml 4.10 is set in OPAM
+            RUN opam switch create 4.10.0 || opam switch 4.10.0
+            RUN eval $(opam env)
+
+            # Install ocamlbuild, ocamlfind, and other necessary tools
+            RUN opam install -y ocamlbuild ocamlfind dune
+
+            # Add the REMS opam repository and update OPAM
+            RUN opam repository add rems https://github.com/rems-project/opam-repository.git#opam2 && \
+                opam update
+
+            # Clone the rmem repository
+            RUN git clone https://github.com/rems-project/rmem.git $RMEM_ROOT
+
+            # Install the rmem tool with all dependencies
+            WORKDIR $RMEM_ROOT
+            RUN opam install . --deps-only -y
+
+            #ENV OCAMLBUILD="$(opam var bin)/ocamlbuild"
+            #ENV PATH="$OCAMLBUILD:$PATH"
+            ## Build rmem using make with optimized mode
+            # Build rmem using make with optimized mode, specifying OCAMLBUILD path
+            RUN eval $(opam env) && make MODE=opt OCAMLBUILD=$(which ocamlbuild)
+      test_directives:
+        - type: raw string
+          content: |
+            # no test
+      result:
+        type: TestIncomplete
+        time_spent: 30
+

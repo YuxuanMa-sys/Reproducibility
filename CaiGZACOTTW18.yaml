@@ -1,0 +1,95 @@
+dblp_url: https://dblp.org/rec/journals/pvldb/CaiGZACOTTW18
+badges: [ ]
+computational_status:
+  type: ComputationalArticle
+  source_link_used_by_cp16:
+  tool_names:
+    - GCC
+    - Make
+    - Autoconf
+    - Git
+  innermost_computational_section_headings:
+    - Prerequisites installation
+    - GAM source cloning
+    - Patch application
+    - Building libcuckoo
+    - Building GAM core
+    - Building tools and benchmarks
+    - Distributed applications
+    - Benchmark setup
+  source_search:
+    type: SourceFound
+    reproducibility_documentation_level: specifies_some_commands
+    path:
+      links:
+        - url: http://www.vldb.org/pvldb/vol11/p1604-cai.pdf
+        - url: https://github.com/ooibc88/gam
+    is_source_versioned: yes
+    build_attempt:
+      time_spent: 40
+      base_image:
+        name: ubuntu
+        tag: "20.04"
+      build_directives:
+        - type: apt-get install
+          packages:
+            - gcc
+            - g++
+            - make
+            - autoconf
+            - libtool
+            - libboost-thread-dev
+            - libboost-system-dev
+            - libboost-filesystem-dev
+            - libibverbs-dev
+            - git
+            - wget
+            - automake
+            - ca-certificates
+        - type: ENV
+          mapping:
+            DEBIAN_FRONTEND: noninteractive
+        - type: RUN
+          cmds:
+            - git clone https://github.com/ooibc88/gam.git /opt/gam
+        - type: RUN
+          cmds:
+            - cd /opt/gam/src
+            - sed -i 's/abs(ghost_size.load())/abs(static_cast<long>(ghost_size.load()))/g' remote_request.cc
+            - sed -i 's/abs(ghost_size.load())/abs(static_cast<long>(ghost_size.load()))/g' local_request.cc
+        - type: RUN
+          cmds:
+            - cd /opt/gam/lib/libcuckoo
+            - autoreconf -fis
+            - ./configure
+            - make
+            - make install
+        - type: RUN
+          cmds:
+            - cd /opt/gam/src
+            - make -j
+      test_directives:
+        - type: RUN
+          cmds:
+            - cd /opt/gam/test
+            - make -j
+        - type: RUN
+          cmds:
+            - cd /opt/gam/dht
+            - make -j
+            - ./kv_benchmark.sh
+        - type: RUN
+          cmds:
+            - cd /opt/gam/database/tpcc
+            - sed -i 's/-lboost_system/-lboost_system -lpthread/g' Makefile
+            - make clean
+            - make -j
+        - type: RUN
+          cmds:
+            - cd /opt/gam
+            - git stash
+            - git checkout farm
+            - cd src
+            - make -j
+      result:
+        type: BuildAndTestSuccess

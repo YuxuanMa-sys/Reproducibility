@@ -1,0 +1,68 @@
+source:
+  original_link: https://github.com/ooibc88/gam/ # url
+  original_dead: false # bool
+
+  # The following fields should be the ID of the archive.org snapshot (in the URL) containing the source code
+
+  first_live_snapshot: 2020100709562
+
+
+
+  link_path: # list[str]
+    # URLs you followed to get to the source code.
+
+    # First entry: aritcle, Google search, or original source URL
+    - https://dl.acm.org/doi/pdf/10.14778/3236187.3236209
+
+    - https://github.com/ooibc88/gam/
+
+  source_downloadable: true # bool
+  binary_downloadable: false # bool
+  minutes_spent: 30 # int
+build:
+  skip_build: false # bool
+  build_success: true # bool
+  functional_test_success: true # bool (required if build_success; otherwise omit)
+  functional_test_description: "run the macro benchmark script provided" # str (required if build_success; otherwise omit)
+  online_references: # list[str]
+    - https://github.com/ooibc88/gam/
+  package_managers_used:
+    - name: apt-get
+      packages_installed:
+        - gcc
+        - g++
+        - make
+        - autoconf
+        - libtool
+        - libboost-thread-dev
+        - libboost-system-dev
+        - libboost-filesystem-dev
+        - libibverbs-dev
+        - git
+        - wget
+
+    - name: git
+      packages_installed:
+        - https://github.com/ooibc88/gam.git
+
+    - name: make-from-source
+      packages_installed:
+        - /opt/gam/lib/libcuckoo
+        - /opt/gam/src
+        - /opt/gam/test
+        - /opt/gam/dht
+        - /opt/gam/database/tpcc
+        - /opt/gam/src (FaRM branch)
+
+
+  minutes_spent: 20 # int
+  bitwise_reproducible: false # bool (required if build_success; otherwise omit)
+  bitwise_irreproducible_reason: | # str (required if not bitwise_reproducible; otherwise omit)
+    Package versions and dependencies: When using package managers like apt-get or npm, the latest versions of packages might be fetched 
+    if specific versions are not pinned. This can lead to different dependencies being installed over time.
+    
+    Source code changes: If the source repositories are cloned without a specific commit or tag, the latest version is pulled, 
+    which can change over time.
+notes: | # str (optional; omit if empty)
+  I also ran the micro benchmark and FaRM test as functional test, it didn't crash or fail, just keep telling me 'ssh error',
+  I commented those in the dockerfile and stated the reason. It's likely IP and port I used were not correct, not the reproducing functional issues. 

@@ -1,0 +1,79 @@
+source:
+  original_link: https://github.com/silt/ # url
+  original_dead: false # bool
+
+  # The following fields should be the ID of the archive.org snapshot (in the URL) containing the source code
+  # If there is no snapshot before the link is live, or any of the other fields, omit the field entirely
+
+  first_live_snapshot: 20180611011515 # int (optional)
+
+  link_path: # list[str]
+    # URLs you followed to get to the source code.
+
+    # First entry: aritcle, Google search, or original source URL
+    - http://doi.acm.org/10.1145/2043556.2043558
+
+    # Last entry: actual source code
+    - https://github.com/silt/silt
+
+  source_downloadable: true # bool
+  binary_downloadable: false # bool
+  minutes_spent: 10 # int
+build:
+  skip_build: false # bool
+  build_success: true # bool
+  functional_test_success: true # bool (required if build_success; otherwise omit)
+  functional_test_description: "execute the test ./testFawnDS" # str (required if build_success; otherwise omit)
+  online_references: # list[str]
+    - https://web.archive.org/web/20220120113117/http://reproducibility.cs.arizona.edu/v2/data/sosp11_LimFAK11_build.txt # str (url)
+  package_managers_used:
+    - name: apt-get
+      packages_installed:
+        - software-properties-common
+        - libc6-dev
+        - linux-libc-dev
+        - g++-8
+        - gcc-8
+        - g++-4.8
+        - gcc-4.8
+        - openjdk-7-jdk
+        - make
+        - wget
+        - curl
+        - autoconf
+        - automake
+        - libtool
+        - gawk
+        - libtbb-dev
+        - libpthread-stubs0-dev
+        - libboost-all-dev
+        - libssl-dev
+        - libxerces-c-dev
+        - libdb-dev
+        - libgsl0-dev
+        - git
+        - cmake
+    - name: curl
+      packages_installed:
+        - https://github.com/Kitware/CMake/releases/download/v3.13.4/cmake-3.13.4-Linux-x86_64.tar.gz
+    - name: git
+      packages_installed:
+        - https://github.com/google/googletest.git
+        - https://github.com/silt/silt.git
+  make_from_source:
+    packages_installed:
+      - https://github.com/google/googletest.git
+      - https://github.com/silt/silt.git
+
+  minutes_spent: 40 # int
+  bitwise_reproducible: false # bool (required if build_success; otherwise omit)
+  bitwise_irreproducible_reason: | # str (required if not bitwise_reproducible; otherwise omit)
+    Non-fixed Dependency Versions: The apt-get and git clone commands do not specify exact versions of the installed packages or cloned repositories, so different versions may be pulled in at different times, resulting in non-reproducible builds.
+    Non-deterministic File Ordering: When using tools like tar and make, the file order might not be consistent across builds, which can result in different outputs.
+notes: | # str (optional; omit if empty)
+  used different gcc version for googletest and the project
+  manually installed cmake with desired version
+
+## Please REMOVE the fields which are not relevant for your report.
+## Do not leave them with filler text.
+## You may comment them out if you insist on saving them.

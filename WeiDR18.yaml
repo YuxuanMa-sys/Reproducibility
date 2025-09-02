@@ -1,0 +1,85 @@
+dblp_url: https://dblp.org/rec/journals/pacmpl/WeiDR18
+badges: ['artifacts_available_v1_1']
+computational_status:
+  type: ComputationalArticle
+  source_link_used_by_cp16:
+    url: https://zenodo.org/records/1307248
+    earliest_alive_on: 2024-08-29 13:07-06:00
+    latest_alive_on: 2024-12-04 14:15-06:00
+  tool_names:
+    - Ubuntu
+    - OpenJDK 11
+    - SBT
+    - Git
+    - TeX Live
+  innermost_computational_section_headings:
+    - Install system dependencies
+    - Install Java and SBT
+    - Clone and compile the repository
+    - Install TeX Live for LaTeX tools
+    - Generate the paper
+  source_search:
+    type: SourceFound
+    reproducibility_documentation_level: specifies_some_commands
+    path:
+      links:
+        - url: https://doi.org/10.1145/3236800
+        - url: https://dl.acm.org/doi/pdf/10.1145/3236800
+        - url: https://zenodo.org/records/1307248
+        - url: https://github.com/Kraks/RefuncAAM
+    is_source_versioned: yes
+    build_attempt:
+      time_spent: 60
+      base_image:
+        name: ubuntu
+        tag: "18.04"
+      build_directives:
+
+        - type: apt-get install
+          packages:
+            - sudo
+            - git
+            - wget
+            - gnupg2
+            - make
+            - software-properties-common
+            - apt-transport-https
+            - ca-certificates
+
+        - type: apt-get install
+          packages:
+            - openjdk-11-jdk
+
+        - type: RUN
+          cmds:
+            - apt-get update
+            - apt-get install -y apt-transport-https curl gnupg -yqq
+            - sh -c 'echo "deb https://repo.scala-sbt.org/scalasbt/debian all main" > /etc/apt/sources.list.d/sbt.list'
+            - apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 99E82A75642AC823
+            - apt-get update
+            - apt-get install sbt
+
+
+
+        - type: ENV
+          mapping:
+            JAVA_HOME: /usr/lib/jvm/java-11-openjdk-amd64
+            PATH: $PATH:/usr/lib/jvm/java-11-openjdk-amd64/bin
+
+        - type: RUN
+          cmds:
+            - git clone https://github.com/Kraks/RefuncAAM.git code
+            - cd code
+            - sbt compile
+
+
+
+
+      test_directives:
+        - type: RUN
+          cmds:
+            - cd code
+            - sbt test
+
+      result:
+        type: BuildAndTestSuccess

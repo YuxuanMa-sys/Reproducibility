@@ -1,0 +1,87 @@
+dblp_url: https://dblp.org/rec/journals/pvldb/ShahKZ17
+badges: [ ]
+computational_status:
+  type: ComputationalArticle
+  source_link_used_by_cp16:
+  tool_names:
+    - Ubuntu
+    - R
+    - Python3
+    - Git
+    - GCC
+    - Make
+    - wget
+  innermost_computational_section_headings:
+    - System dependencies installation
+    - Adding CRAN repository
+    - R installation
+    - Installing R packages
+    - Cloning Hamlet Extension repository
+    - Downloading and preparing datasets
+    - Renaming dataset files
+  source_search:
+    type: SourceFound
+    reproducibility_documentation_level: specifies_some_commands
+    path:
+      links:
+        - url: https://doi.org/10.14778/3157794
+        - url: https://dl.acm.org/doi/pdf/10.14778/3157794.3157804
+        - url: https://github.com/pvn25/Hamlet_Extension
+    is_source_versioned: yes
+    build_attempt:
+      time_spent: 20
+      base_image:
+        name: ubuntu
+        tag: "20.04"
+      build_directives:
+        - type: ENV
+          mapping:
+            DEBIAN_FRONTEND: noninteractive
+            TZ: America/New_York
+
+        - type: apt-get install
+          packages:
+            - gnupg
+            - software-properties-common
+            - wget
+            - python3
+            - python3-pip
+            - git
+            - libcurl4-openssl-dev
+            - libssl-dev
+            - libxml2-dev
+            - gcc
+            - make
+            - tzdata
+            - ca-certificates
+        - type: RUN
+          cmds:
+            - apt-key adv --keyserver hkp://keyserver.ubuntu.com --recv-keys E298A3A825C0D65DFD57CBB651716619E084DAB9
+            - add-apt-repository 'deb https://cloud.r-project.org/bin/linux/ubuntu focal-cran40/'
+        - type: apt-get install
+          packages:
+            - r-base
+        - type: RUN
+          cmds:
+            - R -e "install.packages(c('rpart', 'e1071', 'CORElearn', 'glmnet'), repos='https://cloud.r-project.org/')"
+        - type: RUN
+          cmds:
+            - mkdir -p /usr/src/app
+            - cd /usr/src/app
+            - git clone https://github.com/pvn25/Hamlet_Extension.git ./Hamlet_Extension
+            - wget http://cseweb.ucsd.edu/~arunkk/hamlet/RealWorldDatasets.zip -O RealWorldDatasets.zip
+            - unzip RealWorldDatasets.zip -d ./
+            - mkdir -p ./Hamlet_Extension/Code/Materialize_Joins/Expedia
+            - cp -r ./RealWorldDatasets/Expedia ./Hamlet_Extension/Code/Materialize_Joins/
+            - mv ./Hamlet_Extension/Code/Materialize_Joins/Expedia/S_listings.csv ./Hamlet_Extension/Code/Materialize_Joins/Expedia/listingsnew.csv
+            - mv ./Hamlet_Extension/Code/Materialize_Joins/Expedia/R2_searches.csv ./Hamlet_Extension/Code/Materialize_Joins/Expedia/searchesnew.csv
+            - mv ./Hamlet_Extension/Code/Materialize_Joins/Expedia/R1_hotels.csv ./Hamlet_Extension/Code/Materialize_Joins/Expedia/hotelsnew.csv
+      test_directives:
+        - type: RUN
+          cmds:
+            - cd /usr/src/app/Hamlet_Extension/Code/Materialize_Joins/Expedia
+            - Rscript test.R
+      result:
+        type: BuildAndTestSuccess
+        time_spent: 30
+

@@ -1,0 +1,62 @@
+dblp_url: https://dblp.org/rec/journals/taco/MbakoyiannisTK18
+badges: [ ]
+computational_status:
+  type: ComputationalArticle
+  source_link_used_by_cp16:
+  tool_names:
+    - Ubuntu
+    - GCC
+    - Python3
+    - Git
+    - Vivado
+  innermost_computational_section_headings:
+    - Dependencies installation
+    - Vivado setup
+    - Environment variable setup
+    - Cloning project repository
+    - Running setup commands
+  source_search:
+    type: SourceFound
+    reproducibility_documentation_level: specifies_some_commands
+    extra_resources:
+      - proprietary_software
+    path:
+      links:
+        - url: https://doi.org/10.1145/3180263
+        - url: https://dl.acm.org/doi/pdf/10.1145/3180263
+        - url: https://github.com/dbakoyiannis/PCIe_FPGA_Accel
+    is_source_versioned: yes
+    extra_resources:
+      - proprietary_software
+    build_attempt:
+      time_spent: 10
+      base_image:
+        name: ubuntu
+        tag: "20.04"
+      build_directives:
+        - type: apt-get install
+          packages:
+            - build-essential
+            - libssl-dev
+            - libffi-dev
+            - python3-dev
+            - python3-pip
+            - git
+            - wget
+            - minicom
+            - sudo
+            - udev
+        - type: ENV
+          mapping:
+            DEBIAN_FRONTEND: noninteractive
+            PATH: "/opt/Xilinx/Vivado_HLS/2015.4/bin:${PATH}"
+        - type: RUN
+          cmds:
+            - git clone https://github.com/dbakoyiannis/PCIe_FPGA_Accel.git /workspace/PCIe_FPGA_Accel
+      test_directives: [ ]
+      result:
+        type: BuildIncomplete
+        time_spent: 30
+        description: "The build fails because Vivado is required to run the project."
+        crashing_command_output: "Vivado tools were not found in the expected directory or were not properly set up."
+        code: extra_resources

@@ -1,0 +1,65 @@
+dblp_url: https://example-url-for-bayonet-project  # Replace with the actual URL if available
+badges: [ 'Ar' ]
+computational_status:
+  type: ComputationalArticle
+  source_link_used_by_cp16:
+  tool_names:
+    - Ubuntu
+    - DMD (D Language Compiler)
+    - Git
+    - wget
+    - curl
+  innermost_computational_section_headings:
+    - Dependencies installation
+    - DMD compiler installation
+    - Cloning Bayonet repository
+    - Running scripts
+    - Executing Bayonet example
+  source_search:
+    type: SourceFound
+    reproducibility_documentation_level: specifies_some_commands
+    path:
+      links:
+        - url: https://doi.org/10.1145/3192366.3192400
+        - url: https://dl.acm.org/doi/pdf/10.1145/3192366.3192400
+        - url: https://github.com/eth-sri/bayone
+    is_source_versioned: yes
+    build_attempt:
+      time_spent: 45  # Adjust as needed
+      base_image:
+        name: ubuntu
+        tag: "20.04"
+      build_directives:
+        - type: apt-get install
+          packages:
+            - wget
+            - curl
+            - unzip
+            - git
+        - type: ENV
+          mapping:
+            DEBIAN_FRONTEND: noninteractive
+        - type: RUN
+          cmds:
+            - wget https://downloads.dlang.org/releases/2.x/2.098.0/dmd_2.098.0-0_amd64.deb
+            - apt-get update
+            - apt-get install -y ./dmd_2.098.0-0_amd64.deb
+            - rm dmd_2.098.0-0_amd64.deb
+        - type: RUN
+          cmds:
+            - git clone https://github.com/eth-sri/bayonet.git /home/bayonet
+        - type: WORKDIR
+          path: /home/bayonet
+        - type: RUN
+          cmds:
+            - chmod +x dependencies.sh
+            - ./dependencies.sh
+        - type: RUN
+          cmds:
+            - chmod +x build.sh
+            - ./build.sh
+        - type: RUN
+          cmds:
+            - ./bayonet examples/congestion-deterministic.bayonet > congestion-deterministic.psi
+      result:
+        type: BuildAndTestSuccess

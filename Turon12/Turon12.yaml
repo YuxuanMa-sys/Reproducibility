@@ -1,0 +1,45 @@
+dblp_url: https://dblp.org/rec/conf/pldi/Turon12
+computational_status:
+  type: ComputationalArticle
+  source_link_used_by_cp16:
+    url: https://github.com/sbt/sbt/releases/download/v0.13.17/sbt-0.13.17.zip
+    born_after: 2019-01-01
+    earliest_alive_on: 2020-08-01 00:00+00:00
+    latest_alive_on: 2024-10-15 12:00+00:00
+    dead_on: null
+    description: SBT (Simple Build Tool) installation and ChemistrySet project setup.
+  tool_names:
+    - openjdk-7-jdk
+    - scala
+    - sbt
+  innermost_computational_section_headings:
+    - Install dependencies
+    - Install SBT
+    - Compile and test ChemistrySet project
+  source_search:
+    type: SourceFound
+    path:
+      links:
+        - url: https://github.com/sbt/sbt/releases/download/v0.13.17/sbt-0.13.17.zip
+    is_source_versioned: yes
+    build_attempt:
+      base_image:
+        name: ubuntu
+        tag: "14.04"
+      build_directives:
+        - type: apt-get install
+          packages:
+            - openjdk-7-jdk
+            - scala
+            - wget
+            - unzip
+        - type: RUN
+          cmds:
+            - wget https://github.com/sbt/sbt/releases/download/v0.13.17/sbt-0.13.17.zip -O /tmp/sbt.zip
+            - unzip /tmp/sbt.zip -d /usr/share
+            - export PATH=$PATH:/usr/share/sbt/bin
+        - type: RUN
+          cmds:
+            - sbt -batch -no-colors 'set logLevel := Level.Info' compile test
+      result:
+        type: BuildAndTestSuccess

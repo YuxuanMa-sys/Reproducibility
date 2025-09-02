@@ -1,0 +1,59 @@
+dblp_url: https://dblp.org/rec/conf/sigmod/BegoliCHML18
+badges: [ ]
+computational_status:
+  type: ComputationalArticle
+  source_link_used_by_cp16:
+  tool_names:
+    - openjdk-11
+    - git
+    - gradle
+  innermost_computational_section_headings:
+    - Java installation
+    - Repository cloning
+    - Build process
+    - Test execution
+  source_search:
+    type: SourceFound
+    reproducibility_documentation_level: specifies_some_commands
+    path:
+      links:
+        - url: https://doi.org/10.1145/3183713.3190662
+        - url: https://dl.acm.org/doi/pdf/10.1145/3183713.3190662
+        - url: http://calcite.apache.org/docs/powered_by
+        - url: https://github.com/apache/calcite
+    is_source_versioned: yes
+    build_attempt:
+      time_spent: 30
+      base_image:
+        name: ubuntu
+        tag: "20.04"
+      build_directives:
+        - type: ENV
+          mapping:
+            DEBIAN_FRONTEND: noninteractive
+            TZ: America/New_York
+
+        - type: apt-get install
+          packages:
+            - openjdk-11-jdk
+            - git
+            - curl
+            - tzdata
+
+        - type: ENV
+          mapping:
+            JAVA_HOME: /usr/lib/jvm/java-11-openjdk-amd64
+            PATH: $JAVA_HOME/bin:$PATH
+
+        - type: RUN
+          cmds:
+            - git clone https://github.com/apache/calcite.git
+            - cd calcite
+            - ./gradlew build
+      test_directives:
+        - type: RUN
+          cmds:
+            - cd calcite
+            - ./gradlew test
+      result:
+        type: BuildAndTestSuccess

@@ -1,0 +1,28 @@
+comment                                  repro-data
+type                                        default
+course_grade                                  100.6
+bonus                                           NaN
+course_grade_before_bonus                     100.6
+exam                                           72.9
+project_overall                               110.0
+project_final                                   NaN
+project_weekly_avg_after_drops_capped         110.0
+project_weekly_avg_after_drops                199.0
+project_n_weeks_after_drops                     7.0
+project_weekly_sum_after_drops               1393.3
+pres_avg                                        0.0
+project_week_1                                300.0
+project_week_2                                 75.0
+project_week_3                                166.7
+project_week_4                                275.0
+project_week_5                                150.0
+project_week_6                                276.7
+project_week_7                                125.0
+project_week_8                                100.0
+mp_avg                                        100.0
+mp0                                           100.0
+mp1                                           100.0
+mp2                                           100.0
+Name: yuxuanm4, dtype: object
+
+See <https://canvas.illinois.edu/courses/49727/pages/grading-formula>

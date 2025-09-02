@@ -1,0 +1,76 @@
+dblp_url: https://dblp.org/rec/journals/pacmpl/LeeHJLRL18
+badges: [ 'artifacts_evaluated_functional_v1_1' ]
+computational_status:
+  type: ComputationalArticle
+  source_link_used_by_cp16:
+  tool_names:
+    - Ubuntu
+    - CMake
+    - Git
+    - G++
+    - Python3
+    - Ninja
+  innermost_computational_section_headings:
+    - Dependencies installation
+    - Environment variable setup
+    - Cloning LLVM and Clang-twin repository
+    - Configuring build with Ninja
+    - Building and installing LLVM and Clang
+  source_search:
+    type: SourceFound
+    reproducibility_documentation_level: specifies_some_commands
+    path:
+      links:
+        - url: https://doi.org/10.1145/3276495
+        - url: https://dl.acm.org/doi/pdf/10.1145/3276495
+        - url: https://github.com/snu-sf/clang-twin
+    is_source_versioned: yes
+    extra_resources:
+      - more_than_1_hour
+    build_attempt:
+      time_spent: 40
+      base_image:
+        name: ubuntu
+        tag: "22.04"
+      build_directives:
+        - type: apt-get install
+          packages:
+            - cmake
+            - git
+            - g++
+            - python3
+            - libncurses5-dev
+            - zlib1g-dev
+            - libssl-dev
+            - curl
+            - ninja-build
+        - type: ENV
+          mapping:
+            LLVM_SRC_ROOT: /opt/llvm-src
+            LLVM_BUILD_ROOT: /opt/llvm-build
+        - type: RUN
+          cmds:
+            - mkdir -p $LLVM_SRC_ROOT
+            - git clone --depth 1 https://github.com/llvm/llvm-project.git $LLVM_SRC_ROOT
+            - mkdir -p $LLVM_SRC_ROOT/tools/clang
+            - git clone https://github.com/snu-sf/clang-twin.git $LLVM_SRC_ROOT/tools/clang-twin
+        - type: RUN
+          cmds:
+            - mkdir -p $LLVM_BUILD_ROOT
+            - cd $LLVM_BUILD_ROOT
+            - cmake -G "Ninja" $LLVM_SRC_ROOT/llvm -DLLVM_BUILD_TESTS=ON -DCMAKE_BUILD_TYPE=Release -DLLVM_ENABLE_PROJECTS="clang"
+        - type: RUN
+          cmds:
+            - cd $LLVM_BUILD_ROOT
+            - ninja
+        - type: RUN
+          cmds:
+            - cd $LLVM_BUILD_ROOT
+            - ninja install
+      test_directives: [ ]
+      result:
+        type: BuildIncomplete
+        time_spent: 30
+        description: "The LLVM build takes too long."
+        crashing_command_output: "it takes 5-6 hours and running out of memory"
+        code: extra_resources

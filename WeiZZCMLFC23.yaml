@@ -1,0 +1,53 @@
+dblp_url: https://dblp.org/rec/conf/ccs/WeiZZCMLFC23
+badges: [ ]
+computational_status:
+  type: ComputationalArticle
+  source_link_used_by_cp16:
+  tool_names:
+    - Anaconda
+    - Conda
+    - PyTorch
+    - Git
+    - wget
+  innermost_computational_section_headings:
+    - System dependencies installation
+    - Repository cloning
+    - Conda environment setup
+    - PyTorch and dependencies installation
+    - Plot replication script execution
+  source_search:
+    type: SourceFound
+    reproducibility_documentation_level: specifies_some_commands
+    path:
+      links:
+        - url: https://doi.org/10.1145/3576915
+        - url: https://dl.acm.org/doi/10.1145/3576915.3616593
+        - url: https://github.com/DmsKinson/DPMLBench
+    is_source_versioned: yes
+    build_attempt:
+      time_spent: 30
+      base_image:
+        name: continuumio/anaconda3
+        tag: latest
+      build_directives:
+        - type: apt-get install
+          packages:
+            - git
+            - wget
+        - type: RUN
+          cmds:
+            - git clone https://github.com/DmsKinson/DPMLBench.git
+            - cd DPMLBench
+            - conda create --name dpml python=3.8 -y
+            - echo "source activate dpml" > ~/.bashrc
+            - /bin/bash -c "source ~/.bashrc"
+            - conda install -n dpml pytorch=1.10.0 torchvision cudatoolkit=11.7 -c pytorch -c nvidia -y
+            - /bin/bash -c "source activate dpml && pip install -r requirements.txt && pip install matplotlib"
+      test_directives:
+        - type: RUN
+          cmds:
+            - cd DPMLBench
+            - /bin/bash -c "source activate dpml && bash replicate_figure.sh"
+      result:
+        type: BuildAndTestSuccess
+

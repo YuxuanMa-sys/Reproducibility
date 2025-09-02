@@ -1,0 +1,93 @@
+dblp_url: https://dblp.org/rec/journals/pacmpl/KaiserZKRD18
+badges: [ 'artifacts_evaluated_functional_v1_1', 'artifacts_available_v1_1' ]
+computational_status:
+  type: ComputationalArticle
+  source_link_used_by_cp16:
+  tool_names:
+    - Mtac2
+  innermost_computational_section_headings:
+    - Dependencies installation
+    - OCaml and Opam setup
+    - Coq installation
+    - UniCoq installation
+    - Cloning Mtac2
+    - Building Mtac2
+  source_search:
+    type: SourceFound
+    reproducibility_documentation_level: specifies_some_commands
+    path:
+      links:
+        - url: https://doi.org/10.1145/3236773
+        - url: https://dl.acm.org/doi/pdf/10.1145/3236773
+        - url: https://github.com/Mtac2/Mtac2
+    is_source_versioned: yes
+    build_attempt:
+      time_spent: 60
+      base_image:
+        name: ubuntu
+        tag: "22.04"
+      build_directives:
+        - type: apt-get install
+          packages:
+            - tzdata
+            - make
+            - m4
+            - unzip
+            - curl
+            - git
+            - sudo
+            - libssl-dev
+            - ca-certificates
+            - bubblewrap
+            - aspcud
+            - ocaml
+            - ocaml-native-compilers
+            - pkg-config
+            - gcc
+            - g++
+            - opam
+            - libgmp-dev
+        - type: ENV
+          mapping:
+            DEBIAN_FRONTEND: noninteractive
+            TZ: Etc/UTC
+        - type: RUN
+          cmds:
+            - opam init --disable-sandboxing -y
+        - type: RUN
+          eval_string: $(opam env)
+          cmds:
+            - opam switch create 4.10.0
+            - ocaml -version
+        - type: RUN
+          eval_string: $(opam env)
+          cmds:
+            - opam install -y coq.8.7.2 --update-invariant
+        - type: RUN
+          eval_string: $(opam env)
+          cmds:
+            - opam repo add coq-released https://coq.inria.fr/opam/released
+            - opam install -y coq-unicoq
+        - type: RUN
+          cmds:
+            - git clone https://github.com/Mtac2/Mtac2.git
+      test_directives:
+        - type: RUN
+          eval_string: $(opam env)
+          cmds:
+            - cd Mtac2
+            - coq_makefile -f _CoqProject -o Makefile
+            - make
+      result:
+        type: BuildCrash
+        time_spent: 60
+        crashing_command_output: "ERROR Could not update repository 'default': OpamDownload.Download_fail(_, 'Curl failed: \"/usr/bin/curl --write-out %{http_code}\\n --retry 3 --retry-delay 2 --user-agent opam/2.1.2 -L -o /tmp/opam-7-78fd2d/index.tar.gz.part -- https://opam.ocaml.org/index.tar.gz\" exited with code 35')[ERROR] Initial download of repository failed."
+        code: "unassigned"
+        description: "The core issue is that we can't access `opam.ocaml.org`,
+                      which is preventing the download of necessary files for
+                      OPAM installation and initialization.
+                      The issue involves OPAM failing to update its default repository during the initial setup. The error message indicates
+                      that the curl command,
+                      used to download the repository index file from https://opam.ocaml.org, exited with code 35, which suggests a problem
+                      related to SSL connections or certificate validation.
+                      As a result, the initial repository download could not be completed."

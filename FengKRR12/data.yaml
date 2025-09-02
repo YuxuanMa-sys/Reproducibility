@@ -1,0 +1,74 @@
+source:
+  original_link: http://i.stanford.edu/hazy/victor/bismarck/ # url
+  original_dead: false # bool
+
+  # The following fields should be the ID of the archive.org snapshot (in the URL) containing the source code
+  # If there is no snapshot before the link is live, or any of the other fields, omit the field entirely
+  first_live_snapshot: 20140122114732 # int (optional)
+
+
+
+  link_path: # list[str]
+    # URLs you followed to get to the source code.
+
+    # First entry: aritcle, Google search, or original source URL
+    - http://doi.acm.org/10.1145/2213836.2213874
+
+    - http://i.stanford.edu/hazy/victor/bismarck/
+
+
+    # Last entry: actual source code
+    - http://i.stanford.edu//hazy/victor/bismarck-download/
+
+  source_downloadable: true # bool
+  binary_downloadable: true # bool
+  minutes_spent: 25 # int
+build:
+  skip_build: false # bool
+  build_success: true # bool
+  functional_test_success: true # bool (required if build_success; otherwise omit)
+  functional_test_description: "test postgresql can be started after the project is compiled" # str (required if build_success; otherwise omit)
+  online_references: # list[str]
+    - https://web.archive.org/web/20220119005210/http://reproducibility.cs.arizona.edu/v2/data/sigmod12_FengKRR12_build.txt # str (url)
+  package_managers_used:
+    - name: apt-get
+      packages_installed:
+        - postgresql-12
+        - postgresql-server-dev-12
+        - gcc
+        - python3
+        - python3-pip
+        - python3-dev
+        - libpq-dev
+        - make
+        - rsync
+        - wget
+        - python3-psycopg2
+
+    - name: wget
+      packages_installed:
+        - https://ftp.postgresql.org/pub/source/v12.20/postgresql-12.20.tar.gz
+        - http://i.stanford.edu/hazy/victor/downloads/bismarck.tar.gz
+
+    - name: rsync
+      packages_installed:
+        - /usr/include/postgresql/12/server/
+
+  make_from_source:
+    packages_installed:
+      - https://ftp.postgresql.org/pub/source/v12.20/postgresql-12.20.tar.gz
+      - http://i.stanford.edu/hazy/victor/downloads/bismarck.tar.gz
+
+
+  minutes_spent: 30 # int
+  bitwise_reproducible: false # bool (required if build_success; otherwise omit)
+  bitwise_irreproducible_reason: | # str (required if not bitwise_reproducible; otherwise omit)
+    Dynamic Library Versions: The Dockerfile uses apt-get to install dependencies like PostgreSQL and GCC. If the versions of these packages change or if different versions are pulled during the build process, it could lead to non-reproducible builds.
+    Non-Deterministic File Ordering: The use of rsync and find in your Dockerfile could lead to inconsistent file ordering when copying or modifying files, which may result in different outputs between builds.
+
+notes: | # str (optional; omit if empty)
+  manually copied the header that are missing after installing postgresql
+  and include the path 'usr/include' in all the Makefiles under the directory src/ports/postgres/
+## Please REMOVE the fields which are not relevant for your report.
+## Do not leave them with filler text.
+## You may comment them out if you insist on saving them

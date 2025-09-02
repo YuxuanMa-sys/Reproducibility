@@ -1,0 +1,95 @@
+dblp_url: https://dblp.org/rec/conf/asplos/GodboleCMS24
+badges: [ 'artifacts_evaluated_functional_v1_1', 'artifacts_available_v1_1', 'results_reproduced_v1_1' ]
+computational_status:
+  type: ComputationalArticle
+  source_link_used_by_cp16:
+  tool_names:
+    - Ubuntu 20.04
+    - Python3
+    - pip
+    - curl
+    - git
+    - unzip
+    - Yosys
+    - SymbiYosys
+    - Icarus Verilog
+  innermost_computational_section_headings:
+    - Environment Setup
+    - Python Package Installation
+    - CVC5 Installation
+    - HW Tooling Installation
+    - Repository Cloning
+    - Synthesis Scripts Execution
+    - Security Analysis Scripts Execution
+  source_search:
+    type: SourceFound
+    reproducibility_documentation_level: specifies_some_commands
+    path:
+      links:
+        - url: https://doi.org/10.1145/3620665.3640418
+        - url: https://dl.acm.org/doi/pdf/10.1145/3620665.3640418
+        - url: https://github.com/adwait/asplos24-micro-update-lifting
+    is_source_versioned: yes
+    build_attempt:
+      time_spent: 45
+      base_image:
+        name: ubuntu
+        tag: "20.04"
+      build_directives:
+        - type: ENV
+          mapping:
+            DEBIAN_FRONTEND: noninteractive
+
+        - type: apt-get install
+          packages:
+            - python3
+            - python3-pip
+            - curl
+            - git
+            - unzip
+            - time
+
+        - type: RUN
+          cmds:
+            - pip3 install tabulate cvc5 vcdvcd
+
+        - type: RUN
+          cmds:
+            - curl -L -o /tmp/cvc5.zip https://github.com/cvc5/cvc5/releases/download/cvc5-1.2.0/cvc5-Linux-x86_64-shared.zip
+            - unzip /tmp/cvc5.zip -d /usr/local
+            - rm /tmp/cvc5.zip
+            - "[ ! -e /usr/local/bin/cvc5 ] && ln -s /usr/local/cvc5/bin/cvc5 /usr/local/bin/cvc5 || true"
+
+        - type: RUN
+          cmds:
+            - curl -L -o /tmp/oss-cad-suite.tgz https://github.com/YosysHQ/oss-cad-suite-build/releases/download/2024-11-14/oss-cad-suite-linux-x64-20241114.tgz
+            - tar -xzf /tmp/oss-cad-suite.tgz -C /usr/local
+            - rm /tmp/oss-cad-suite.tgz
+
+        - type: ENV
+          mapping:
+            PATH: /usr/local/oss-cad-suite/bin:$PATH
+
+        - type: RUN
+          cmds:
+            - git clone https://github.com/adwait/asplos24-micro-update-lifting.git /project
+
+        - type: RUN
+          cmds:
+            - cd project
+            - python3 cva6_wbuffer_script.py
+            - python3 cva6_tlb_script.py
+            - python3 cva6_su_script.py
+            - python3 cva6_lsu_script_hier.py
+            - python3 cva6_lsu_script_mono.py
+      test_directives:
+        - type: RUN
+          cmds:
+            - cd project
+            - python3 cva6_security_script.py
+            - python3 sodor5_security_script.py
+
+      result:
+        type: TestFail
+        code: 'unassigned'
+        description: "when running those synthesis and security analysis python scripts, the ran didn't stop, either outputting anything for a long time. "

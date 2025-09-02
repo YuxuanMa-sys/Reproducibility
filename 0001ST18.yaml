@@ -1,0 +1,96 @@
+dblp_url: https://dblp.org/rec/journals/pacmpl/0001ST18
+badges: [ ]
+computational_status:
+  type: ComputationalArticle
+  source_link_used_by_cp16:
+  tool_names:
+    - ocaml
+    - opam
+    - dune
+    - git
+  innermost_computational_section_headings:
+    - OCaml installation
+    - Repository cloning
+    - Dependency installation
+    - Build process
+    - Test execution
+  source_search:
+    type: SourceFound
+    reproducibility_documentation_level: specifies_some_commands
+    path:
+      links:
+        - url: https://doi.org/10.1145/3158100
+        - url: https://dl.acm.org/doi/pdf/10.1145/3158100
+        - url: https://github.com/hiroshi-unno/coar
+    is_source_versioned: yes
+    build_attempt:
+      time_spent: 45
+      base_image:
+        name: ocaml/opam
+        tag: "ubuntu-22.04-ocaml-5.2"
+      build_directives:
+        - type: raw string
+          content: |
+            RUN sudo apt-get update && \
+                sudo apt-get install -y \
+                cmake \
+                m4 \
+                pkg-config \
+                libblas-dev \
+                liblapack-dev \
+                libmpfr-dev \
+                libgmp-dev \
+                libglpk-dev \
+                libffi-dev \
+                zlib1g-dev \
+                curl \
+                python3 \
+                && sudo apt-get clean
+
+            # Set environment variables
+            ENV LLVM_SRC_ROOT=/opt/llvm-src
+            ENV LLVM_BUILD_ROOT=/opt/llvm-build
+            ENV COAR_ROOT=/home/opam/coar
+
+            # Switch to the OPAM user (default in this base image)
+            USER opam
+            WORKDIR /home/opam
+
+            # Clone the CoAR repository
+            RUN git clone https://github.com/hiroshi-unno/coar.git $COAR_ROOT
+
+            # Install required OCaml packages
+            WORKDIR $COAR_ROOT
+            RUN opam install . --deps-only -y
+
+            # Install additional OCaml dependencies
+            RUN opam install -y \
+                core \
+                core_unix \
+                domainslib \
+                menhir \
+                ppx_deriving_yojson \
+                ocaml-compiler-libs \
+                ocamlgraph \
+                zarith \
+                z3 \
+                minisat \
+                camlzip \
+                dune
+
+
+
+            # Build CoAR
+            WORKDIR $COAR_ROOT
+            RUN eval $(opam env) && dune build main.exe
+
+            # Set PATH to include CoAR executable
+            ENV PATH="$COAR_ROOT/_build/default:$PATH"
+
+      test_directives:
+        - type: raw string
+          content: |
+            WORKDIR $COAR_ROOT
+            RUN eval $(opam env) && dune exec main -- -c ./config/solver/dbg_pcsat_tbq_ar.json -p pcsp ./benchmarks/CHC/simple/sum.smt2
+      result:
+        type: BuildAndTestSuccess

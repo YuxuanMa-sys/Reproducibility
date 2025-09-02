@@ -1,0 +1,24 @@
+# Please write any tools you used or online posts you found useful
+# If you used ChatGPT, StackOverflow, GNU Parallel, or any similar tools, please note below.
+# If you have overall notes on the assignment, you may state them below.
+
+- type: experience_report
+  notes: 'N/A'
+  tools_used:
+    - IntelliJ IDEA
+    - Git
+    - Nondex
+    - StackOverflow
+    - ChatGPT
+  useful_online_posts:
+    - https://qamayankgupta.medium.com/how-to-fix-a-flaky-test-773d20ea4778
+    - https://www.reddit.com/r/java/comments/o1bfpt/handling_flaky_unit_tests_in_java/
+
+# Repeat the following item for every flaky test you fixed.
+# There should be at least one, two for extra points.
+
+- type: fix
+  flaky_test_id: 1
+  pr_link: 'https://github.com/YuxuanMa-sys/avro/pull/1'
+  notes: 'The test was failing intermittently due to order sensitivity in the comparison of employee data within the employees map. JSON objects do not guarantee order, which led to inconsistencies between the expected and actual results during test runs.'
+

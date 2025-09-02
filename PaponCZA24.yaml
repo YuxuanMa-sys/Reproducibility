@@ -1,0 +1,66 @@
+dblp_url: https://dblp.org/rec/journals/pacmmod/PaponCZA24
+badges: [ ]
+computational_status:
+  type: ComputationalArticle
+  source_link_used_by_cp16:
+  tool_names:
+    - Ubuntu 22.04
+    - Clang-11
+    - Make
+    - Python3
+    - Pandas
+    - NumPy
+    - Networkit
+  innermost_computational_section_headings:
+    - Environment Setup
+    - Dependency Installation
+    - Repository Cloning
+    - Project Build
+    - Functional Tests
+  source_search:
+    type: SourceFound
+    reproducibility_documentation_level: specifies_some_commands
+    path:
+      links:
+        - url: https://doi.org/10.1145/3654928
+        - url: https://dl.acm.org/doi/pdf/10.1145/3654928
+        - url: https://github.com/BU-DiSC/CAVE
+    is_source_versioned: yes
+    build_attempt:
+      time_spent: 45
+      base_image:
+        name: ubuntu
+        tag: "22.04"
+      build_directives:
+        - type: ENV
+          mapping:
+            CC: clang
+            CXX: clang++
+        - type: apt-get install
+          packages:
+            - clang-11
+            - clang-tools-11
+            - make
+            - git
+            - python3
+            - python3-pip
+            - wget
+            - libaio-dev
+        - type: RUN
+          cmds:
+            - ln -s /usr/bin/clang++-11 /usr/bin/clang++
+            - pip3 install pandas numpy networkit==10.0
+            - git clone --depth 1 https://github.com/BU-DiSC/CAVE.git /CAVE
+            - cd /CAVE/cpp
+            - make
+      test_directives:
+        - type: RUN
+          cmds:
+            - cd /CAVE/scripts
+            - python3 graph_gen.py
+            - cd /CAVE/cpp
+            - ./bin/parser ../data/BA_10000_25.edgelist
+            - ./bin/bfs ../data/BA_10000_25.bin thread 1 256
+            - ./bin/bfs ../data/BA_10000_25.bin cache 0
+      result:
+        type: BuildAndTestSuccess

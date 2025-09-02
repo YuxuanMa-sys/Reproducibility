@@ -1,0 +1,74 @@
+dblp_url: https://dblp.org/rec/journals/pacmpl/ChenZW24
+badges: [ 'artifacts_evaluated_reusable_v1_1', 'artifacts_available_v1_1', results_reproduced_v1_1 ]
+computational_status:
+  type: ComputationalArticle
+  source_link_used_by_cp16:
+  tool_names:
+    - Ubuntu 22.04
+    - time
+    - cmake
+    - gcc
+    - g++
+    - make
+    - libncurses5-dev
+    - bear
+    - git
+    - wget
+    - clang
+    - MoveC
+  innermost_computational_section_headings:
+    - Installing dependencies
+    - Cloning and building MoveC
+    - Running functional tests
+    - Cleaning up temporary files
+  source_search:
+    type: SourceFound
+    reproducibility_documentation_level: specifies_some_commands
+    path:
+      links:
+        - url: https://doi.org/10.1145/3649834
+        - url: https://dl.acm.org/doi/pdf/10.1145/3649834
+        - url: https://zenodo.org/records/10775922
+        - url: https://github.com/drzchen/movec
+    is_source_versioned: yes
+    build_attempt:
+      time_spent: 30
+      base_image:
+        name: ubuntu
+        tag: "22.04"
+      build_directives:
+        - type: ENV
+          mapping:
+            DEBIAN_FRONTEND: noninteractive
+            PATH: /usr/src/app/movec/bin:$PATH
+        - type: apt-get install
+          packages:
+            - time
+            - cmake
+            - gcc
+            - g++
+            - make
+            - libncurses5-dev
+            - bear
+            - git
+            - wget
+            - clang
+            - ca-certificates
+        - type: RUN
+          cmds:
+            - mkdir -p /usr/src/app
+            - cd /usr/src/app
+            - git clone https://github.com/drzchen/movec.git movec
+            - export PATH="movec/bin:$PATH"
+      test_directives:
+        - type: RUN
+          cmds:
+            - cd /usr/src/app
+            - movec -c movec/examples/advice-call/main.c -m movec/examples/advice-call/aspect.mon -o output.c
+            - gcc output.c -o a.out
+            - ./a.out
+        - type: RUN
+          cmds:
+            - rm -f output.c a.out
+      result:
+        type: BuildAndTestSuccess

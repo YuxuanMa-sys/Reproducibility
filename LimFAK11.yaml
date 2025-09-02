@@ -1,0 +1,130 @@
+dblp_url: https://dblp.org/rec/conf/sosp/LimFAK11
+badges: [ ]
+computational_status:
+  type: ComputationalArticle
+  source_link_used_by_cp16:
+    url: https://github.com/silt/silt
+    earliest_alive_on: 2018-06-11 01:15-06:00
+    latest_alive_on: 2024-11-06 20:46-06:00
+    description: Active repository for the SLIT project
+  tool_names:
+    - Ubuntu
+    - GCC
+    - G++
+    - CMake
+    - Git
+    - Make
+    - Autotools
+    - OpenJDK
+  innermost_computational_section_headings:
+    - Dependencies installation
+    - Compiler setup
+    - CMake installation
+    - Cloning Google Test
+    - Cleaning up
+    - Cloning project repository
+    - Compiling the project
+    - Running tests
+  source_search:
+    type: SourceFound
+    reproducibility_documentation_level: specifies_some_commands
+    path:
+      links:
+        - url: http://doi.org/10.1145/2043556.2043558
+        - url: https://dl.acm.org/doi/pdf/10.1145/2043556.2043558
+        - url: https://github.com/silt/silt
+    is_source_versioned: yes
+    build_attempt:
+      time_spent: 20
+      base_image:
+        name: ubuntu
+        tag: "14.04"
+      build_directives:
+        - type: ENV
+          mapping:
+            DEBIAN_FRONTEND: noninteractive
+            TZ: America/New_York
+
+        - type: apt-get install
+          packages:
+            - software-properties-common
+        - type: RUN
+          cmds:
+            - add-apt-repository ppa:ubuntu-toolchain-r/test
+        - type: apt-get install
+          packages:
+            - software-properties-common
+            - libc6-dev
+            - linux-libc-dev
+            - g++-8
+            - gcc-8
+            - g++-4.8
+            - gcc-4.8
+            - openjdk-7-jdk
+            - make
+            - wget
+            - curl
+            - autoconf
+            - automake
+            - libtool
+            - gawk
+            - libtbb-dev
+            - libpthread-stubs0-dev
+            - libboost-all-dev
+            - libssl-dev
+            - libxerces-c-dev
+            - libdb-dev
+            - libgsl0-dev
+            - git
+            - tzdata
+            - ca-certificates
+        - type: RUN
+          cmds:
+            - update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-8 60 --slave /usr/bin/g++ g++ /usr/bin/g++-8
+        - type: RUN
+          cmds:
+            - mkdir -p /opt/cmake
+            - curl -L https://github.com/Kitware/CMake/releases/download/v3.13.4/cmake-3.13.4-Linux-x86_64.tar.gz -o cmake.tar.gz
+            - tar -zxvf cmake.tar.gz --strip-components=1 -C /opt/cmake
+            - rm cmake.tar.gz
+            - ln -s /opt/cmake/bin/cmake /usr/local/bin/cmake
+            - ln -s /opt/cmake/bin/cpack /usr/local/bin/cpack
+            - ln -s /opt/cmake/bin/ctest /usr/local/bin/ctest
+
+        - type: RUN
+          cmds:
+            - mkdir -p /usr/src/app
+            - cd /usr/src/app
+            - git clone https://github.com/google/googletest.git
+            - cd googletest
+            - git checkout release-1.8.1
+            - mkdir build
+            - cd build
+            - cmake ..
+            - make
+            - make install
+            - cd ..
+            - rm -rf build
+        - type: RUN
+          cmds:
+            - mkdir -p /usr/local/lib/googletest
+            - ln -s /usr/lib/libgtest.a /usr/local/lib/googletest/libgtest.a
+            - ln -s /usr/lib/libgtest_main.a /usr/local/lib/googletest/libgtest_main.a
+        - type: RUN
+          cmds:
+            - cd /usr/src/app
+            - git clone https://github.com/silt/silt.git ./slit
+        - type: RUN
+          cmds:
+            - cd /usr/src/app/slit
+            - autoreconf -is
+            - CC=/usr/bin/gcc-4.8 CXX=/usr/bin/g++-4.8 ./configure CXXFLAGS="-std=c++11 -I/usr/local/include"
+            - make
+      test_directives:
+        - type: RUN
+          cmds:
+            - cd /usr/src/app/slit
+            - cd test/fawnds
+            - ./testFawnDS
+      result:
+        type: BuildAndTestSuccess

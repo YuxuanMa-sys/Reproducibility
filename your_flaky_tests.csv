@@ -1,0 +1,9 @@
+Project URL,SHA Detected,Module Path,Fully-Qualified Test Name (packageName.ClassName.methodName),Category,Status,PR Link,Notes
+https://github.com/apache/avro,efe9aa7fbe457805dc894a9186e1267603d82dd2,lang/java/avro,org.apache.avro.reflect.TestNonStringMapKeys.testNonStringMapKeys,ID,,,
+https://github.com/apache/nifi,2bd752d868a8f3e36113b078bb576cf054e945e8,minifi/minifi-toolkit/minifi-toolkit-configuration,org.apache.nifi.minifi.toolkit.configuration.ConfigMainTest.testTransformRoundTripMultipleRelationships,ID,,,
+https://github.com/apache/nifi,2bd752d868a8f3e36113b078bb576cf054e945e8,nifi-registry/nifi-registry-core/nifi-registry-framework,org.apache.nifi.registry.security.ldap.tenants.LdapUserGroupProviderTest.testSearchUsersAndGroupsMembershipThroughGroups,ID,,,
+https://github.com/wildfly/wildfly,f9b089fcdfb089eabcf68117e6141af3be826d21,galleon-pack/layer-metadata-tests,org.wildfly.feature.pack.layer.tests.opentelemetry.OpenTelemetryLayerMetaDataTestCase.testClassInApiBaggagePropagationPackage,ID,,,
+https://github.com/apache/jackrabbit-oak,0440e096dc7a460d206c77a5f178796db31a0ef4,oak-auth-ldap,org.apache.jackrabbit.oak.security.authentication.ldap.impl.LdapIdentityProviderTest.testGetDeclaredMembers,ID,,,
+https://github.com/GoogleCloudPlatform/spring-cloud-gcp,cf556f623ef4ad2872496a4486dc3a9a8b8e80bc,spring-cloud-gcp-data-spanner,com.google.cloud.spring.data.spanner.core.convert.ConverterAwareMappingSpannerEntityReaderTests.readNotFoundColumnTest,ID,,,
+https://github.com/apache/flink,eaffd227d853e0cdef03f1af5016e00f950930a9,flink-table/flink-table-planner,org.apache.flink.table.planner.plan.stream.sql.PartitionableSourceTest.testUnconvertedExpression,ID,,,
+https://github.com/apache/nifi,2bd752d868a8f3e36113b078bb576cf054e945e8,nifi-registry/nifi-registry-core/nifi-registry-framework,org.apache.nifi.registry.security.ldap.tenants.LdapUserGroupProviderTest.testSearchGroupsWithNameAttribute,ID,,,

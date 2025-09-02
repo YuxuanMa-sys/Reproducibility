@@ -1,0 +1,181 @@
+- bibcode: BoddenLH12
+  article_url: http://doi.acm.org/10.1145/2220365.2220366
+  title: Partially Evaluating Finite-State Runtime Monitors Ahead of Time
+  original_source_url: http://bodden.de/clara/
+  build_notes: |-
+    1:BUILD_BY[name] student4
+    1:BUILD_ENVIRONMENT[operating system 32 vs 64]
+    >>>> lsb_release -a
+      No LSB modules are available.
+      Distributor ID: Ubuntu
+      Description:    Ubuntu 14.04.1 LTS
+      Release:        14.04
+      Codename:       trusty
+    >>>> uname -a
+      Linux student-VPCSE13FX 3.13.0-39-generic #66-Ubuntu SMP Tue Oct 28 13:30:27 UTC 2014 x86_64 x86_64 x86_64 GNU/Linux
+    >>>> lscpu
+     Architecture:          x86_64
+     CPU op-mode(s):        32-bit, 64-bit
+     Byte Order:            Little Endian
+     CPU(s):                4
+     On-line CPU(s) list:   0-3
+     Thread(s) per core:    2
+     Core(s) per socket:    2
+     Socket(s):             1
+     NUMA node(s):          1
+     Vendor ID:             GenuineIntel
+     CPU family:            6
+     Model:                 42
+     Stepping:              7
+     CPU MHz:               1400.000
+     BogoMIPS:              4788.81
+     Virtualization:        VT-x
+     L1d cache:             32K
+     L1i cache:             32K
+     L2 cache:              256K
+     L3 cache:              3072K
+     NUMA node0 CPU(s):     0-3
+    >>>> javac -version
+      javac 1.7.0_65
+    >>>> gcc --version
+      gcc (Ubuntu 4.8.2-19ubuntu1) 4.8.2
+    1:END_BUILD_ENVIRONMENT
+    1:DEPENDENCIES[list of dependencies with where to get them]
+    ant
+    svn
+    java
+
+    1:END_DEPENDENCIES
+    1:NOTES[notes on attempted build]
+
+    > svn co https://clara.googlecode.com/svn/trunk/build
+    > cd build
+    > bash download
+      Fetching external item into 'trunk-with-deps/JastAddJ':
+      svn: warning: W215004: No more credentials or we tried too many times.
+      Authentication failed
+
+
+      Fetching external item into 'trunk-with-deps/JastAddExtensions/ControlFlowGraph':
+      svn: warning: W215004: No more credentials or we tried too many times.
+      Authentication failed
+
+
+      Fetching external item into 'trunk-with-deps/JastAddExtensions/IntertypeDeclarations':
+      svn: warning: W215004: No more credentials or we tried too many times.
+      Authentication failed
+
+
+      Fetching external item into 'trunk-with-deps/JastAddExtensions/JimpleBackend':
+      svn: warning: W215004: No more credentials or we tried too many times.
+      Authentication failed
+
+
+      Fetching external item into 'trunk-with-deps/JastAddExtensions/Jimple1.5Backend':
+      svn: warning: W215004: No more credentials or we tried too many times.
+      Authentication failed
+
+
+      Fetching external item into 'trunk-with-deps/JastAddExtensions/JavaFlattening':
+      svn: warning: W215004: No more credentials or we tried too many times.
+      Authentication failed
+
+
+      Fetching external item into 'trunk-with-deps/JastAddExtensions/SootJastAddJ':
+      svn: warning: W215004: No more credentials or we tried too many times.
+      Authentication failed
+    > ant
+      BUILD FAILED
+      /home/student/temp/repro/boddenlh12/build/build.xml:26: The following error occurred while executing this line:
+      /home/student/temp/repro/boddenlh12/abc-ja-exts/build.xml:40: taskdef class JFlex.anttask.JFlexTask cannot be found
+       using the classloader AntClassLoader[]
+
+
+    > cd ..
+    > git clone https://bitbucket.org/jastadd/jastaddj.git
+    This didn't work, most likely needs a specific version of JastAddJ
+
+    1:END_NOTES
+
+    2:BUILD_BY[name] student3
+    2:BUILD_ENVIRONMENT[operating system 32 vs 64]
+    student@Eden:~/repro$ uname -a
+    Linux Eden 3.13.0-43-generic #72~precise1-Ubuntu SMP Tue Dec 9 12:14:18 UTC 2014 x86_64 x86_64 x86_64 GNU/Linux
+
+    2:END_BUILD_ENVIRONMENT
+    2:DEPENDENCIES[list of dependencies with where to get them]
+    Ant
+    svn
+
+    2:END_DEPENDENCIES
+    2:NOTES[notes on attempted build]
+    Downloaded and ran without a problem following the guide on this website:
+    http://www.bodden.de/clara/downloads/
+
+    2:END_NOTES
+- bibcode: WeiDR18
+  article_url: https://doi.org/10.1145/3236800
+  title: 'Refunctionalization of abstract abstract machines: bridging the gap between
+    abstract abstract machines and abstract definitional interpreters (functional
+    pearl).'
+  original_source_url: https://zenodo.org/records/1307248
+  build_notes: ""
+- bibcode: YangLW12
+  article_url: http://www.vldb.org/pvldb/vol5/p1507_xiaochunyang_vldb2012.pdf
+  title: 'ALAE: Accelerating Local Alignment with Affine Gap Exactly in Biosequence
+    Databases'
+  original_source_url: http://hongleiliu.weebly.com/research--projects.html
+  build_notes: |-
+    1:BUILD_BY[name] student5
+    1:BUILD_ENVIRONMENT[operating system 32 vs 64]
+
+    1:END_BUILD_ENVIRONMENT
+    1:DEPENDENCIES[list of dependencies with where to get them]
+
+    1:END_DEPENDENCIES
+    1:NOTES[notes on attempted build]
+
+    Implementation runs. (first compilation using make command after a long long time :) , g++ finally worked)
+
+    Syntax: alae <index file> <query file> <output file>
+
+    student@ubuntu:~/Downloads/builds/vldb12_new/YangLW/ALAE-64bits$ ./bwt_build chr1_random.fa chr1_random_out.txt
+
+    BWT build, Copyright (C) 2011, Northeastern Universtiy.
+
+    Reversing text...done
+    Sorting...done
+    Saving index...done
+    Building bwt index time elapsed:    0s
+
+    Not sure how to check correctness of the output and present it with the correct data.
+
+    1:END_NOTES
+
+
+
+    2:BUILD_BY[name]
+    2:BUILD_ENVIRONMENT[operating system 32 vs 64]
+
+    2:END_BUILD_ENVIRONMENT
+    2:DEPENDENCIES[list of dependencies with where to get them]
+
+    2:END_DEPENDENCIES
+    2:NOTES[notes on attempted build]
+
+    2:END_NOTES
+- bibcode: ThomasK18
+  article_url: http://www.vldb.org/pvldb/vol11/p2168-thomas.pdf
+  title: A Comparative Evaluation of Systems for Scalable Linear Algebra-based Analytics.
+  original_source_url: ''
+  build_notes: ""
+- bibcode: LazersonKS18
+  article_url: https://doi.org/10.1145/3226113
+  title: Lightweight Monitoring of Distributed Streams.
+  original_source_url: ''
+  build_notes: ""
+- bibcode: LinWL18
+  article_url: https://doi.org/10.1145/3242089
+  title: On-GPU Thread-Data Remapping for Branch Divergence Reduction.
+  original_source_url: ''
+  build_notes: ""

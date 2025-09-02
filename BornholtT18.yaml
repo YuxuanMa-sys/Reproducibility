@@ -1,0 +1,78 @@
+dblp_url: https://dblp.org/rec/journals/pacmpl/BornholtT18
+badges: [ 'artifacts_evaluated_functional_v1_1', 'artifacts_evaluated_reusable_v1_1', 'artifacts_available_v1_1' ]
+computational_status:
+  type: ComputationalArticle
+  source_link_used_by_cp16:
+  tool_names:
+    - Racket
+    - Rosette
+    - raco
+    - git
+  innermost_computational_section_headings:
+    - System dependencies installation
+    - Racket installation
+    - Repository cloning
+    - Rosette installation
+    - Running the demo
+  source_search:
+    type: SourceFound
+    reproducibility_documentation_level: specifies_some_commands
+    path:
+      links:
+        - url: https://doi.org/10.1145/3276519
+        - url: https://dl.acm.org/doi/pdf/10.1145/3276519
+        - url: https://github.com/emina/rosette
+    is_source_versioned: yes
+    build_attempt:
+      time_spent: 20
+      base_image:
+        name: ubuntu
+        tag: "20.04"
+      build_directives:
+        - type: ENV
+          mapping:
+            DEBIAN_FRONTEND: noninteractive
+            TZ: America/New_York
+        - type: apt-get install
+          packages:
+            - curl
+            - git
+            - libfontconfig1
+            - libcairo2
+            - libcairo2-dev
+            - libglib2.0-dev
+            - libpango1.0-dev
+            - libpixman-1-dev
+            - libffi-dev
+            - libjpeg62
+            - libjpeg62-dev
+            - libgtk2.0-0
+            - libgtk2.0-dev
+            - xvfb
+            - tzdata
+            - ca-certificates
+
+        - type: RUN
+          cmds:
+            - curl -L https://download.racket-lang.org/installers/8.14/racket-8.14-x86_64-linux-cs.sh -o /tmp/racket.sh
+            - bash /tmp/racket.sh --in-place --dest /usr/racket
+            - rm /tmp/racket.sh
+        - type: ENV
+          mapping:
+            PATH: "/usr/racket/bin:$PATH"
+        - type: RUN
+          cmds:
+            - git clone https://github.com/emina/rosette.git /usr/src/rosette
+        - type: RUN
+          cmds:
+            - cd /usr/src/rosette
+            - raco pkg install --auto
+            - cd /usr/src/rosette/sdsl/fsm
+            - raco make demo.rkt
+
+      test_directives:
+        - type: RUN
+          cmds:
+            - xvfb-run racket demo.rkt
+      result:
+        type: BuildAndTestSuccess

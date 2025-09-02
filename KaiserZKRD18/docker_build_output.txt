@@ -1,0 +1,65 @@
+#0 building with "desktop-linux" instance using docker driver
+
+#1 [internal] load build definition from Dockerfile
+#1 transferring dockerfile: 1.99kB done
+#1 DONE 0.0s
+
+#2 [internal] load metadata for docker.io/library/ubuntu:22.04
+#2 DONE 0.8s
+
+#3 [internal] load .dockerignore
+#3 transferring context: 2B done
+#3 DONE 0.0s
+
+#4 [ 1/16] FROM docker.io/library/ubuntu:22.04@sha256:58b87898e82351c6cf9cf5b9f3c20257bb9e2dcf33af051e12ce532d7f94e3fe
+#4 DONE 0.0s
+
+#5 [ 3/16] RUN ln -fs /usr/share/zoneinfo/Etc/UTC /etc/localtime &&     dpkg-reconfigure --frontend noninteractive tzdata
+#5 CACHED
+
+#6 [ 6/16] WORKDIR /home/opamuser
+#6 CACHED
+
+#7 [ 7/16] RUN export CURL_CA_BUNDLE=/etc/ssl/certs/ca-certificates.crt
+#7 CACHED
+
+#8 [ 4/16] RUN apt-get update && apt-get install --reinstall ca-certificates
+#8 CACHED
+
+#9 [ 2/16] RUN apt-get update && apt-get upgrade && apt-get install -y     tzdata     make     m4     unzip     curl     git     sudo     libssl-dev     ca-certificates     bubblewrap     aspcud     ocaml     ocaml-native-compilers     pkg-config     gcc     g++     opam     && apt-get clean
+#9 CACHED
+
+#10 [ 5/16] RUN useradd -m -s /bin/bash opamuser && echo "opamuser ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
+#10 CACHED
+
+#11 [ 8/16] RUN export CURL_SSL_NO_VERIFY=true
+#11 CACHED
+
+#12 [ 9/16] RUN opam init -y --disable-sandboxing &&     eval $(opam env) &&     opam switch create 4.10.0 &&     eval $(opam env)
+#12 0.243 No configuration file found, using built-in defaults.
+#12 0.243 Checking for available remotes: rsync and local, git, mercurial, darcs. Perfect!
+#12 0.251 
+#12 0.251 <><> Fetching repository information ><><><><><><><><><><><><><><><><><><><><><>
+#12 75.39 [ERROR] Could not update repository "default": OpamDownload.Download_fail(_, "Curl failed: \"/usr/bin/curl --write-out %{http_code}\\\\n --retry 3 --retry-delay 2 --user-agent opam/2.1.2 -L -o /tmp/opam-7-6238d2/index.tar.gz.part -- https://opam.ocaml.org/index.tar.gz\" exited with code 35")
+#12 75.39 [ERROR] Initial download of repository failed.
+#12 ERROR: process "/bin/sh -c opam init -y --disable-sandboxing &&     eval $(opam env) &&     opam switch create 4.10.0 &&     eval $(opam env)" did not complete successfully: exit code: 40
+------
+ > [ 9/16] RUN opam init -y --disable-sandboxing &&     eval $(opam env) &&     opam switch create 4.10.0 &&     eval $(opam env):
+rsync and local, git, mercurial, darcs. Perfect!
+0.251 
+0.251 <><> Fetching repository information ><><><><><><><><><><><><><><><><><><><><><>
+75.39 [ERROR] Could not update repository "default": OpamDownload.Download_fail(_, "Curl failed: \"/usr/bin/curl --write-out %{http_code}\\\\n --retry 3 --retry-delay 2 --user-agent opam/2.1.2 -L -o /tmp/opam-7-6238d2/index.tar.gz.part -- https://opam.ocaml.org/index.tar.gz\" exited with code 35")
+75.39 [ERROR] Initial download of repository failed.
+------
+Dockerfile:50
+--------------------
+  49 |     
+  50 | >>> RUN opam init -y --disable-sandboxing && \
+  51 | >>>     eval $(opam env) && \
+  52 | >>>     opam switch create 4.10.0 && \
+  53 | >>>     eval $(opam env)
+  54 |     
+--------------------
+ERROR: failed to solve: process "/bin/sh -c opam init -y --disable-sandboxing &&     eval $(opam env) &&     opam switch create 4.10.0 &&     eval $(opam env)" did not complete successfully: exit code: 40
+
+View build details: docker-desktop://dashboard/build/desktop-linux/desktop-linux/x4oyrcjz4u53kcbgkojwf6y3u

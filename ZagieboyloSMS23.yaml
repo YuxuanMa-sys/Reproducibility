@@ -1,0 +1,79 @@
+dblp_url: "https://dblp.org/rec/conf/ccs/ZagieboyloSMS23"
+badges: [ "artifacts_available_v1_1" ]
+computational_status:
+  type: ComputationalArticle
+  source_link_used_by_cp16:
+  tool_names:
+    - Ubuntu
+    - GCC
+    - G++
+    - Make
+    - Git
+    - GDB
+    - Autoconf
+    - Flex
+    - GPerf
+    - Bison
+    - Python3
+    - PIP
+  innermost_computational_section_headings:
+    - Package Installation
+    - Set G++ Version
+    - Repository Cloning
+    - Build SecVerilog
+    - Python Setup
+  source_search:
+    type: SourceFound
+    reproducibility_documentation_level: specifies_some_commands
+    path:
+      links:
+        - url: https://doi.org/10.1145/3576915.3623074
+        - url: https://dl.acm.org/doi/pdf/10.1145/3576915.3623074
+        - url: https://www.cs.cornell.edu/andru/papers/specverilog/
+        - url: https://github.com/dz333/secverilog
+    is_source_versioned: yes
+    build_attempt:
+      time_spent: 60
+      base_image:
+        name: "ubuntu"
+        tag: "22.04"
+      build_directives:
+        - type: ENV
+          mapping:
+            DEBIAN_FRONTEND: noninteractive
+            TZ: America/New_York
+            CC: /usr/bin/gcc-11
+            CXX: /usr/bin/g++-11
+        - type: apt-get install
+          packages:
+            - gcc-11
+            - g++-11
+            - make
+            - wget
+            - git
+            - gdb
+            - autoconf
+            - flex
+            - gperf
+            - bison
+            - tzdata
+            - ca-certificates
+
+        - type: RUN
+          cmds:
+            - git clone https://github.com/dz333/secverilog.git
+        - type: RUN
+          cmds:
+            - cd secverilog
+            - make CXXFLAGS="-std=c++2a"
+        - type: apt-get install
+          packages:
+            - z3
+      test_directives:
+        - type: RUN
+          cmds:
+            - cd secverilog/test && make || true
+      result:
+        type: BuildAndTestSuccess
+        time_spent: 25
+

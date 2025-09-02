@@ -1,0 +1,76 @@
+dblp_url: "https://dblp.org/rec/conf/asplos/AlavisamaniVA0Q24"
+badges: [ 'artifacts_available_v1_1' ]
+computational_status:
+  type: ComputationalArticle
+  source_link_used_by_cp16:
+  tool_names:
+    - Ubuntu
+    - CMake
+    - G++
+    - Make
+    - Git
+    - OpenMPI
+  innermost_computational_section_headings:
+    - Package updates and installations
+    - CMake installation
+    - Promatch repository cloning
+    - Building the Promatch project
+    - Running test script
+  source_search:
+    type: SourceFound
+    reproducibility_documentation_level: specifies_some_commands
+    path:
+      links:
+        - url: https://doi.org/10.1145/3620666.3651339
+        - url: https://dl.acm.org/doi/pdf/10.1145/3620666.3651339
+        - url: https://github.com/nargesalavi/Promatch
+    is_source_versioned: yes
+    build_attempt:
+      time_spent: 20
+      base_image:
+        name: ubuntu
+        tag: "20.04"
+      build_directives:
+        - type: ENV
+          mapping:
+            DEBIAN_FRONTEND: noninteractive
+            TZ: America/New_York
+        - type: apt-get install
+          packages:
+            - g++
+            - wget
+            - make
+            - git
+            - libopenmpi-dev
+            - openmpi-bin
+            - tzdata
+            - ca-certificates
+        - type: ENV
+          mapping:
+            DEBIAN_FRONTEND: noninteractive
+            CMAKE_VERSION: 3.20.2
+        - type: RUN
+          cmds:
+            - wget https://github.com/Kitware/CMake/releases/download/v3.20.2/cmake-3.20.2-linux-x86_64.sh
+            - chmod +x cmake-3.20.2-linux-x86_64.sh
+            - ./cmake-3.20.2-linux-x86_64.sh --skip-license --prefix=/usr/local
+            - rm cmake-3.20.2-linux-x86_64.sh
+        - type: RUN
+          cmds:
+            - git clone https://github.com/nargesalavi/Promatch.git
+        - type: RUN
+          cmds:
+            - cd Promatch
+            - mkdir -p Release
+            - cd Release
+            - cmake .. -DCMAKE_BUILD_TYPE=Release
+            - make
+      test_directives:
+        - type: RUN
+          cmds:
+            - chmod +x /Promatch/scripts/test.sh
+            - /Promatch/scripts/test.sh 40
+      result:
+        type: BuildAndTestSuccess
+        time_spent: 40
+

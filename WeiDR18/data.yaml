@@ -1,0 +1,62 @@
+source:
+  original_link: https://zenodo.org/records/1307248 # url
+  original_dead: false # bool
+
+  first_live_snapshot: 20240829130757 # int (optional)
+
+  link_path: # list[str]
+    - https://zenodo.org/records/1307248
+
+    - https://github.com/Kraks/RefuncAAM/tree/v1.0.0
+
+  source_downloadable: true # bool
+  binary_downloadable: false # bool
+  minutes_spent: 20 # int
+build:
+  skip_build: false # bool
+  build_success: true # bool
+  functional_test_success: true # bool (required if build_success; otherwise omit)
+  functional_test_description: "run sbt compile and sbt test, then generate the paper using 'cd paper' and 'make' " # str (required if build_success; otherwise omit)
+  online_references: # list[str]
+    - https://github.com/Kraks/RefuncAAM/tree/v1.0.0
+    - https://www.scala-sbt.org/download/
+  package_managers_used:
+    - name: apt-get
+      packages_installed:
+        - sudo
+        - git
+        - wget
+        - gnupg2
+        - make
+        - software-properties-common
+        - apt-transport-https
+        - ca-certificates
+        - openjdk-11-jdk
+        - curl
+        - gnupg
+        - sbt
+        - texlive-latex-base
+        - texlive-latex-recommended
+        - texlive-fonts-recommended
+        - texlive-latex-extra
+        - texlive-fonts-extra
+
+    - name: git-clone
+      packages_installed:
+        - https://github.com/Kraks/RefuncAAM.git
+
+    - name: make-from-source
+      packages_installed:
+        - /code/paper
+  minutes_spent: 40 # int
+  bitwise_reproducible: false # bool (required if build_success; otherwise omit)
+  bitwise_irreproducible_reason: | # str (required if not bitwise_reproducible; otherwise omit)
+    Files downloaded or created during the build (via wget, git clone, make) have varying timestamps.
+    Files might retain different ownership across builds.
+    The order in which files are extracted or processed (e.g., tar files) can vary.
+    The git clone command could fetch different versions unless a specific commit or tag is used.
+
+
+## Please REMOVE the fields which are not relevant for your report.
+## Do not leave them with filler text.
+## You may comment them out if you insist on saving them.

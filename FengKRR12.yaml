@@ -1,0 +1,113 @@
+dblp_url: https://dblp.org/rec/conf/sigmod/FengKRR12
+badges: [ ]
+computational_status:
+  type: ComputationalArticle
+  source_link_used_by_cp16:
+    url: http://i.stanford.edu/hazy/victor/bismarck/
+    born_after:
+    earliest_alive_on: 2014-01-22 11:47-06:00
+    latest_alive_on: 2024-11-06 20:46-06:00
+    dead_on:
+    description: Active repository for Bismarck project
+  tool_names:
+    - PostgreSQL
+    - GCC
+    - Python3
+    - Make
+  innermost_computational_section_headings:
+    - Dependencies installation
+    - PostgreSQL header management
+    - Bismarck source extraction
+    - Makefile configuration
+    - Compilation
+    - PostgreSQL setup
+  source_search:
+    type: SourceFound
+    reproducibility_documentation_level: specifies_some_commands
+    path:
+      links:
+        - url: https://doi.org/10.1145/2213836.2213874
+        - url: http://research.cs.wisc.edu/hazy/victor/bismarck-download/
+        - url: http://i.stanford.edu/hazy/victor/downloads/bismarck.tar.gz
+    is_source_versioned: yes
+    build_attempt:
+      time_spent: 60  # Adjust as needed
+      base_image:
+        name: ubuntu
+        tag: "20.04"
+      build_directives:
+        - type: ENV
+          mapping:
+            DEBIAN_FRONTEND: noninteractive
+            TZ: America/New_York
+
+        - type: apt-get install
+          packages:
+            - postgresql-12
+            - postgresql-server-dev-12
+            - gcc
+            - python3
+            - python3-pip
+            - python3-dev
+            - libpq-dev
+            - make
+            - rsync
+            - wget
+            - python3-psycopg2
+            - ca-certificates
+            - tzdata
+
+        - type: RUN
+          cmds:
+            - wget https://ftp.postgresql.org/pub/source/v12.20/postgresql-12.20.tar.gz -O postgresql-12.20.tar.gz
+            - tar -xvzf postgresql-12.20.tar.gz
+            - rsync -a postgresql-12.20/src/include/ /usr/include/postgresql/
+        - type: RUN
+          cmds:
+            - rsync -a --ignore-existing /usr/include/postgresql/12/server/ /usr/include/postgresql/
+        - type: RUN
+          cmds:
+            - mkdir -p /usr/src/app
+            - cd /usr/src/app
+            - wget http://i.stanford.edu/hazy/victor/downloads/bismarck.tar.gz
+            - tar -xvzf bismarck.tar.gz --strip 1
+        - type: Raw RUN
+          cmds: |
+            cd /usr/src/app && \
+            find src/ports/postgres/ -type f -name Makefile -exec sed -i '/^[[:space:]]*CFLAGS[[:space:]]*=/ s|$| -I/usr/include/postgresql|' {} \;
+        - type: RUN
+          cmds:
+            - cd /usr/src/app
+            - make
+      test_directives:
+        - type: RUN
+          cmds:
+            - chown -R postgres:postgres /var/lib/postgresql
+      result:
+        type: TestFail
+        description: The test includes setting up PostgreSQL database and server. The 'initdb -D SQL_DATA' command cannot be can as root,
+          so I need to do all the operations in a new shell as a new user. And also editing environmental variables. Too complicated for now. I may have a try later.
+          here's the command performing Invoking SVM
+          
+          export PGHOME=/usr/src/app
+          cd $PGHOME
+          mkdir SQL_DATA
+          bin/initdb -D SQL_DATA
+          bin/pg_ctl -D SQL_DATA -l logfile start
+          export PATH=$PATH:$PGHOME/bin
+          createuser --superuser bismarckvm
+          createdb test_bismarck
+          wget http://i.stanford.edu/hazy/victor/downloads/bismarck_data.tar.gz
+          tar -xvzf bismarck_data.tar.gz
+          psql -d test_bismarck -f dblife.sql
+          psql -d test_bismarck -f forest.sql
+          psql -d test_bismarck -f mlens1m.sql
+          psql -d test_bismarck -f conll.sql
+          psql -d test_bismarck -c "SELECT dense_logit('forest', 1, 54);"
+          psql -d test_bismarck -c "SELECT sparse_logit('dblife', 22, 41270);"
+          psql -d test_bismarck -c "SELECT factor('mlens1m', 333, 6040, 3952, 10);"
+          psql -d test_bismarck -c "SELECT crf('conll', 4444, 7448606, 22, 19, 1);"
+          bin/pg_ctl -D SQL_DATA stop
+
+
+        code: 'unresolvable_compile_error'

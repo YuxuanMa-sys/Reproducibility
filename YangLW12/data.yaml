@@ -1,0 +1,50 @@
+source:
+  original_link: http://hongleiliu.weebly.com/alae.html # url
+  original_dead: false # bool
+
+  # The following fields should be the ID of the archive.org snapshot (in the URL) containing the source code
+  # If there is no snapshot before the link is live, or any of the other fields, omit the field entirely
+
+  first_live_snapshot: 20170421233304 # int (optional)
+
+
+  link_path: # list[str]
+    - http://hongleiliu.weebly.com/alae.html
+    - http://hongleiliu.weebly.com/uploads/8/2/0/9/8209923/alae-x64-linux.tar.gz
+
+  source_downloadable: true # bool
+  binary_downloadable: false # bool
+  minutes_spent: 10 # int
+build:
+  skip_build: false # bool
+  build_success: true # bool
+  functional_test_success: true # bool (required if build_success; otherwise omit)
+  functional_test_description: "run 'bwt_build text10M.txt text10M.index' to build BWT index for our example data" # str (required if build_success; otherwise omit)
+  online_references: # list[str]
+    - http://hongleiliu.weebly.com/alae.html # str (url)
+  package_managers_used: # list[obj]
+    - name: apt-get
+      packages_installed:
+        - g++
+        - gcc
+        - make
+        - wget
+        - tar
+    - name: wget
+      packages_installed:
+        - http://hongleiliu.weebly.com/uploads/8/2/0/9/8209923/alae-x64-linux.tar.gz
+        - http://hongleiliu.weebly.com/uploads/8/2/0/9/8209923/example_data_alae.tar.gz
+    - name: make-from-source
+      packages_installed:
+        - /ALAE-64bits
+  minutes_spent: 20 # int
+  bitwise_reproducible: false # bool (required if build_success; otherwise omit)
+  bitwise_irreproducible_reason: | # str (required if not bitwise_reproducible; otherwise omit)
+    The wget and tar commands retain variable timestamps from the server and extraction time, leading to differences in file modification times across builds.
+    The tar extraction may retain the original file owner from the archive, which can differ between environments.
+    File Ordering: The order in which files are extracted may not be deterministic, leading to slight variations in how layers are created.
+
+
+## Please REMOVE the fields which are not relevant for your report.
+## Do not leave them with filler text.
+## You may comment them out if you insist on saving them.

@@ -1,0 +1,44 @@
+source:
+  original_link: https://github.com/aturon/ChemistrySet # url
+  original_dead: false # bool
+
+  # The following fields should be the ID of the archive.org snapshot (in the URL) containing the source code
+  # If there is no snapshot before the link is live, or any of the other fields, omit the field entirely
+
+  first_live_snapshot: 20201208125059 # int (optional)
+
+  link_path: # list[str]
+
+    - http://dl.acm.org/citation.cfm?id=2254084&dl=ACM&coll=DL&CFID=332772085&CFTOKEN=30429386
+
+    - https://github.com/aturon/ChemistrySet
+
+  source_downloadable: true # bool
+  binary_downloadable: false # bool
+  minutes_spent: 10 # int
+build:
+  skip_build: false # bool
+  build_success: true # bool
+  functional_test_success: true # bool (required if build_success; otherwise omit)
+  functional_test_description: "sbt -batch -no-colors 'set logLevel := Level.Info' compile test, this will show the test succeed in the log" # str (required if build_success; otherwise omit)
+  online_references: # list[str]
+    - https://web.archive.org/web/20220122183239/http://reproducibility.cs.arizona.edu/v2/data/pldi12_Turon12_build.txt
+  package_managers_used:
+    - name: apt-get
+      packages_installed:
+        - openjdk-7-jdk
+        - wget
+        - unzip
+        - scala
+    - name: wget
+      packages_installed:
+        - https://github.com/sbt/sbt/releases/download/v0.13.17/sbt-0.13.17.zip
+
+
+  minutes_spent: 20 # int
+  bitwise_reproducible: false # bool (required if build_success; otherwise omit)
+  bitwise_irreproducible_reason: | # str (required if not bitwise_reproducible; otherwise omit)
+    Non-fixed Dependency Versions: The Dockerfile installs openjdk-7-jdk, scala, and downloads sbt without specifying exact versions or checksums, so different versions may be pulled over time.
+    Uncontrolled External Downloads: The wget command for downloading sbt could pull a different file if the remote content changes, causing variations in the build.
+
+  .

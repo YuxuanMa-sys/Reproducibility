@@ -1,0 +1,62 @@
+dblp_url: https://dblp.org/rec/journals/pvldb/YangLW12
+badges: [ ]
+computational_status:
+  type: ComputationalArticle
+  source_link_used_by_cp16:
+    url: http://hongleiliu.weebly.com/alae.html
+    earliest_alive_on: 2017-04-21 23:33-06:00
+    latest_alive_on: 2024-11-06 20:46-06:00
+    description: Active repository for the ALAE project
+  tool_names:
+    - Ubuntu
+    - g++
+    - gcc
+    - wget
+    - make
+    - tar
+  innermost_computational_section_headings:
+    - Package updates and installation
+    - ALAE binary download and extraction
+    - Example data download and extraction
+    - Custom make script execution
+    - Running bwt_build command
+  source_search:
+    type: SourceFound
+    reproducibility_documentation_level: specifies_some_commands
+    path:
+      links:
+        - url: https://doi.org/10.14778/2350229
+        - url: https://dl.acm.org/doi/pdf/10.14778/2350229.2350265
+        - url: http://hongleiliu.weebly.com/uploads/8/2/0/9/8209923/alae-x64-linux.tar.gz
+        - url: http://hongleiliu.weebly.com/uploads/8/2/0/9/8209923/example_data_alae.tar.gz
+    is_source_versioned: no
+    build_attempt:
+      time_spent: 25
+      base_image:
+        name: ubuntu
+        tag: "14.04"
+      build_directives:
+        - type: apt-get install
+          packages:
+            - g++
+            - gcc
+            - make
+            - wget
+            - tar
+        - type: RUN
+          cmds:
+            - wget http://hongleiliu.weebly.com/uploads/8/2/0/9/8209923/alae-x64-linux.tar.gz
+            - tar -xzf alae-x64-linux.tar.gz
+        - type: RUN
+          cmds:
+            - cd /ALAE-64bits
+            - wget http://hongleiliu.weebly.com/uploads/8/2/0/9/8209923/example_data_alae.tar.gz
+            - tar -xzf example_data_alae.tar.gz
+            - make
+      test_directives:
+        - type: RUN
+          cmds:
+            - cd /ALAE-64bits/"example data"
+            - ../bwt_build text10M.txt text10M.index
+      result:
+        type: BuildAndTestSuccess

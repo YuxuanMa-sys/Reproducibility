@@ -1,0 +1,117 @@
+dblp_url: https://dblp.org/rec/conf/asplos/PrakriyaCBSC24
+badges: [ ]
+computational_status:
+  type: ComputationalArticle
+  source_link_used_by_cp16:
+  tool_names:
+    - Ubuntu
+    - Git
+    - Python3
+    - CMake
+    - Ninja
+    - Clang
+    - Icarus Verilog
+  innermost_computational_section_headings:
+    - Essential package installation
+    - FPGA runtime setup
+    - Python environment setup
+    - Cloning TAPA-CS repository
+    - Building TAPA-CS with Ninja
+    - Adding binaries to PATH
+    - Verifying installation
+  source_search:
+    type: SourceFound
+    reproducibility_documentation_level: specifies_some_commands
+    path:
+      links:
+        - url: https://doi.org/10.1145/3620666
+        - url: https://dl.acm.org/doi/pdf/10.1145/3620666.3651347
+        - url: https://github.com/UCLA-VAST/TAPA-CS
+    is_source_versioned: yes
+    build_attempt:
+      time_spent: 30
+      base_image:
+        name: ubuntu
+        tag: "20.04"
+      build_directives:
+        - type: apt-get install
+          packages:
+            - git
+            - wget
+            - python3
+            - python3-pip
+            - cmake
+            - libgoogle-glog-dev
+            - libboost-coroutine-dev
+            - libgflags-dev
+            - clang-8
+            - libclang-8-dev
+            - iverilog
+            - curl
+            - ninja-build
+        - type: RUN
+          cmds:
+            - args: [curl, -L, https://git.io/JuAxz]
+              redirect_stdout: script
+            - bash script
+        - type: RUN
+          cmds:
+            - pip3 install --upgrade pip
+            - pip3 install cmake
+        - type: RUN
+          cmds:
+            - git clone https://github.com/UCLA-VAST/TAPA-CS.git
+        - type: RUN
+          cmds:
+            - cd TAPA-CS
+            - python3 -m pip install backend/python
+        - type: RUN
+          cmds:
+            - cd /TAPA-CS
+            - cmake -B build -GNinja -DCMAKE_CXX_COMPILER=clang++-8 -DCMAKE_C_COMPILER=clang-8
+            - ninja -C build
+            - ninja -C build test
+        - type: RUN
+          cmds:
+            - ln -sf "${PWD}/backend/tapacc" /usr/local/bin/
+            - ln -sf "${PWD}/../src/tapa{,.h}" /usr/local/include/
+            - ln -sf "${PWD}/libtapa.{a,so}" /usr/local/lib/
+        - type: ENV
+          mapping:
+            PATH: "/root/.local/bin:${PATH}"
+      test_directives: [ ]
+      result:
+        type: BuildCrash
+        time_spent: 45
+        description: "Unresolvable compile error (missing file) in upstream source"
+        crashing_command_output: |
+          [1111/1788] Building CXX object apps/bandwidth/CMakeFiles/bandwidth.dir/bandwidth.cpp.o
+          FAILED: apps/bandwidth/CMakeFiles/bandwidth.dir/bandwidth.cpp.o
+          /usr/bin/clang++-8  -I/opt/tools/xilinx/Vitis/2019.2/include -isystem /TAPA-CS/src -Wno-attributes -g -std=gnu++17 -MD -MT apps/bandwidth/CMakeFiles/bandwidth.dir/bandwidth.cpp.o -MF apps/bandwidth/CMakeFiles/bandwidth.dir/bandwidth.cpp.o.d -o apps/bandwidth/CMakeFiles/bandwidth.dir/bandwidth.cpp.o -c /TAPA-CS/apps/bandwidth/bandwidth.cpp
+          In file included from /TAPA-CS/apps/bandwidth/bandwidth.cpp:7:
+          /TAPA-CS/apps/bandwidth/lfsr.h:4:10: fatal error: 'ap_int.h' file not found
+          #include <ap_int.h>
+                   ^~~~~~~~~~
+          1 error generated.
+          [1112/1788] Building CXX object _deps/llvm-build/tools/clang/utils/TableGen/CMakeFiles/clang-tblgen.dir/ClangSACheckersEmitter.cpp.o
+          [1113/1788] Building CXX object apps/cannon/CMakeFiles/cannon.dir/cannon-host.cpp.o
+          [1114/1788] Building CXX object _deps/llvm-build/tools/clang/utils/TableGen/CMakeFiles/clang-tblgen.dir/TableGen.cpp.o
+          [1115/1788] Building CXX object apps/cannon/CMakeFiles/cannon.dir/cannon.cpp.o
+          [1116/1788] Building CXX object _deps/llvm-build/tools/clang/utils/TableGen/CMakeFiles/clang-tblgen.dir/ClangOptionDocEmitter.cpp.o
+          [1117/1788] Building CXX object _deps/llvm-build/tools/clang/utils/TableGen/CMakeFiles/clang-tblgen.dir/ClangDiagnosticsEmitter.cpp.o
+          [1118/1788] Building CXX object _deps/llvm-build/tools/clang/utils/TableGen/CMakeFiles/clang-tblgen.dir/NeonEmitter.cpp.o
+          [1119/1788] Building CXX object _deps/llvm-build/tools/clang/utils/TableGen/CMakeFiles/clang-tblgen.dir/ClangAttrEmitter.cpp.o
+          [1120/1788] Building CXX object _deps/llvm-build/lib/Target/X86/CMakeFiles/LLVMX86CodeGen.dir/X86ISelLowering.cpp.o
+          ninja: build stopped: subcommand failed.
+          ------
+          Dockerfile:36
+          --------------------
+            35 |
+            36 | >>> RUN \
+            37 | >>>      cd /TAPA-CS && \
+            38 | >>>      cmake -B build -GNinja -DCMAKE_CXX_COMPILER=clang++-8 -DCMAKE_C_COMPILER=clang-8 && \
+            39 | >>>      ninja -C build && \
+            40 | >>>      ninja -C build test
+            41 |
+          --------------------
+        code: unresolvable_compile_error

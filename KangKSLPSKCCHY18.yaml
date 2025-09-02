@@ -1,0 +1,76 @@
+dblp_url: https://dblp.org/rec/conf/pldi/KangKSLPSKCCHY18
+badges: [ 'artifacts_evaluated_functional_v1_1' ]
+computational_status:
+  type: ComputationalArticle
+  source_link_used_by_cp16:
+  tool_names:
+    - Ubuntu
+    - Opam
+    - OCaml
+    - Coq
+    - Git
+    - Make
+    - CMake
+  innermost_computational_section_headings:
+    - System package update and dependency installation
+    - OPAM and OCaml setup
+    - Cloning crellvm repository
+    - OPAM repository configuration
+    - Building crellvm
+    - Running benchmarks
+  source_search:
+    type: SourceFound
+    reproducibility_documentation_level: specifies_some_commands
+    path:
+      links:
+        - url: https://doi.org/10.1145/3192366.3192377
+        - url: https://dl.acm.org/doi/pdf/10.1145/3192366.3192377
+        - url: https://github.com/snu-sf/crellvm
+    is_source_versioned: yes
+    build_attempt:
+      time_spent: 30
+      base_image:
+        name: ocaml/opam
+        tag: "ubuntu-16.04"
+      build_directives:
+        - type: raw string
+          content: |
+            RUN sudo apt-get update && sudo apt-get install -y \
+                libboost-all-dev \
+                cmake \
+                m4 \
+                pkg-config \
+                scala \
+                coq \
+                curl \
+                ca-certificates \
+                libgnutls30 \
+                && sudo update-ca-certificates
+
+            # Switch to OPAM environment and install OCaml 4.05.0
+            RUN opam switch create 4.05.0 && \
+                eval $(opam env) && \
+                opam install -y dune ocamlfind ocamlbuild odoc
+
+            # Clone the crellvm repository
+            WORKDIR /crellvm
+            RUN git clone https://github.com/snu-sf/crellvm.git .
+
+            # Ensure the OPAM repository remote is using HTTPS
+            RUN git -C /home/opam/opam-repository remote set-url origin https://github.com/ocaml/opam-repository.git
+
+            # Clear OPAM cache and update repositories
+            RUN git -C /home/opam/opam-repository pull origin master && opam update
+
+            # Install dependencies and build the project
+            RUN make init
+            RUN eval $(opam env) && make llvm
+            RUN eval $(opam env) && make opt
+      test_directives:
+        - type: raw string
+          content: |
+            WORKDIR /crellvm
+            # this will take a long time 
+            RUN eval $(opam env) && make test-init && make test
+      result:
+        type: BuildAndTestSuccess

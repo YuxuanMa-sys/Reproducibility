@@ -1,0 +1,82 @@
+dblp_url: https://dblp.org/rec/journals/pvldb/ChenYZZJZ24
+badges: [ "artifacts_available_v1_1" ]
+computational_status:
+  type: ComputationalArticle
+  source_link_used_by_cp16:
+  tool_names:
+    - Ubuntu 22.04
+    - Clang-17
+    - CMake
+    - Git
+  innermost_computational_section_headings:
+    - Environment Setup
+    - LLVM Clang-17 Installation
+    - Repository Cloning
+    - Project Build
+    - Functional Test Execution
+  source_search:
+    type: SourceFound
+    reproducibility_documentation_level: specifies_some_commands
+    path:
+      links:
+        - url: https://doi.org/10.14778/3675034.3675045
+        - url: https://dl.acm.org/doi/pdf/10.14778/3675034.3675045
+        - url: https://github.com/jacklightChen/spectrum
+    is_source_versioned: yes
+    build_attempt:
+      time_spent: 40
+      base_image:
+        name: ubuntu
+        tag: "22.04"
+      build_directives:
+        - type: ENV
+          mapping:
+            DEBIAN_FRONTEND: noninteractive
+
+        - type: apt-get install
+          packages:
+            - wget
+            - software-properties-common
+            - lsb-release
+
+        - type: RUN
+          cmds:
+            - wget -O llvm.sh https://apt.llvm.org/llvm.sh
+            - bash llvm.sh -s 17
+
+        - type: apt-get install
+          packages:
+            - clang-17
+            - cmake
+            - git
+
+        - type: ENV
+          mapping:
+            CC: clang-17
+            CXX: clang++-17
+
+        - type: RUN
+          cmds:
+            - git clone --depth 1 https://github.com/jacklightChen/spectrum.git /spectrum
+
+        - type: RUN
+          cmds:
+            - cd /spectrum
+            - cmake -S . -B build
+            - cmake --build build -j
+      test_directives:
+        - type: RUN
+          cmds:
+            - ./build/bench Spectrum:36:9973:COPYONWRITE Smallbank:1000000:0 2
+
+      result:
+        type: BuildCrash
+        time_spent: 40
+        crashing_command_output: "CMake Error at CMakeLists.txt:24 (execute_process):
+                                  execute_process failed command indexes:
+                                  1: Child return code: 1
+                                  Call Stack (most recent call first):
+                                    CMakeLists.txt:52 (Execute)
+                                    CMakeLists.txt:113 (GitHub)"
+        code: unassigned
+        description: "failed when trying to configure or build a dependency chfast/intx"
